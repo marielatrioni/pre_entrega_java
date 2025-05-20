@@ -24,9 +24,14 @@ public class Articulo {
     public int getId() {
         return id; // retorna el id del articulo desde donde es llamado este method
     }
-    // no tengo un setter para el id, 
 
-    
+    public String getNombre() {
+    return nombre;
+    }
+
+    public double getPrecio() {
+    return precio;
+    }
 
     void mostrar() {
         System.out.println("ID: " + this.id + " | Nombre: " + this.nombre + " | Precio: $" + this.precio);

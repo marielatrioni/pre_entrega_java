@@ -10,6 +10,7 @@ public class Main {
     // en este caso, el método main es estático porque no se necesita crear un objeto de la clase Main para ejecutarlo */
     // atributos de la clase porque tienen la palabra reservada static
     static ArrayList<Articulo> lista = new ArrayList<>();
+    static ArrayList<Pedido> listaPedidos = new ArrayList<>();
     static Scanner sc = new Scanner(System.in);
 
 
@@ -22,7 +23,8 @@ public class Main {
             System.out.println("2. Ver Listado de Artículos cargados");
             System.out.println("3. Modificar un Artículo");
             System.out.println("4. Eliminar un Artículo");
-            System.out.println("5. Salir del Sistema");
+            System.out.println("5. Crear un Pedido");
+            System.out.println("6. Salir del Sistema");
             System.out.print("Por favor seleccione un número de opción para continuar: ");
             opcion = sc.nextInt();
             sc.nextLine(); // Limpiar buffer
@@ -32,10 +34,11 @@ public class Main {
                 case 2 -> listar_articulos();
                 case 3 -> modificar_articulo();
                 case 4 -> eliminar_articulo();
-                case 5 -> System.out.println("Saliendo del Sistema...");
-                default -> System.out.println("Opción inválida, vuelva a intertarlo");
+                case 5 -> crear_pedido();  // << nuevo
+                case 6 -> System.out.println("Saliendo del Sistema...");
+                default -> System.out.println("Opción inválida, vuelva a intentarlo");
             }
-        } while (opcion != 5);
+        } while (opcion != 6);
     } // FIN del metodo que se ejecuta al iniciar el programa
     
     // INICIO método que crea un artículo con validaciones
@@ -130,7 +133,55 @@ public class Main {
         System.out.println("Artículo eliminado si existía.");
     } // FIN del método que modifica un artículo
 
-    
+    public static void crear_pedido() {
+    if (lista.isEmpty()) {
+        System.out.println("No hay artículos disponibles para realizar un pedido.");
+        return;
+    }
+
+    System.out.print("Ingrese el ID del nuevo pedido: ");
+    int idPedido = sc.nextInt();
+    sc.nextLine();
+
+    Pedido nuevoPedido = new Pedido(idPedido);
+
+    String continuar = "s";  // Inicializamos con "s" para que entre al primer ciclo
+    do {
+        listar_articulos();
+        System.out.print("Ingrese el ID del artículo que desea agregar: ");
+        int idArticulo = sc.nextInt();
+        sc.nextLine();
+
+        Articulo seleccionado = null;
+        for (Articulo art : lista) {
+            if (art.getId() == idArticulo) {
+                seleccionado = art;
+                break;
+            }
+        }
+
+        if (seleccionado == null) {
+            System.out.println("Artículo no encontrado.");
+            continue;
+        }
+
+        System.out.print("Cantidad: ");
+        int cantidad = sc.nextInt();
+        sc.nextLine();
+
+        nuevoPedido.agregarArticulo(seleccionado, cantidad);
+
+        System.out.print("¿Desea agregar otro artículo al pedido? (s/n): ");
+        continuar = sc.nextLine();
+
+    } while (continuar.equalsIgnoreCase("s"));
+
+    listaPedidos.add(nuevoPedido);
+    System.out.println("Pedido creado con éxito. Detalle del pedido:");
+    nuevoPedido.mostrarPedido();
+}
+
+
     // METHOD QUE CONSULTE UN ARTICULO POR SU ID 
     // close para cerrar el scanner
     // sc.close();
